@@ -16,6 +16,9 @@ contract Reestr {
 
   event _Record(uint guid, uint data, uint value);
 
+  function Reestr() {
+      owner = msg.sender ;
+  }
   function newRecord(uint _guid, uint _data, uint _value) ownable {
       Records[_guid] = Record(_data , _value );
       _Record(_guid, _data, _value);
