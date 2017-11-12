@@ -3,30 +3,41 @@ pragma solidity ^0.4.17;
 contract Reestr {
   address public owner;
 
-  struct Record {
-    string data;
-    string value;
-  }
 
-  modifier ownable() {
-    if (msg.sender == owner) _;
-  }
-  
-  mapping (uint => Record) Records;
+    struct Request {
+        uint id;
+        string data;
+        string value;
+    }
 
-  event _Record(uint guid, string data, string value);
+    struct Object {
+        uint lastid;
+        mapping (uint => Request) Records;
+    }
+
+    modifier ownable() {
+        if (msg.sender == owner) _;
+    }
+    mapping (uint => Object) Objects;
+event _Request(uint guid, string data, string value);
+event _Object(uint guid, uint lastid);
 
 function Reestr(){
     owner = msg.sender;
 }
 
-  function newRecord(uint _guid, string _data, string _value) ownable {
-      Records[_guid] = Record(_data , _value );
-      _Record(_guid, _data, _value);
-  }
+function newObeject(uint _guid) ownable {
+      Objects[_guid] = Object( 0 );
+      _Object(_guid, 0);
+}
 
-  function getRecord(uint guid) returns (string _data, string _value) {
-    _data  = Records[guid].data;
-    _value = Records[guid].value;
-  }
+function newRequestr(uint _guid, string _data, string _value ) ownable {
+    Objects[_guid].lastid =+ 1 ;
+    Objects[_guid].Records[Objects[_guid].lastid] = Request( Objects[_guid].lastid, _data, _value );
+}
+
+function getlastid(uint _guid) returns (uint lastid) {
+    lastid  = Objects[_guid].lastid;
+}
+
 }
